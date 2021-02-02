@@ -1,6 +1,6 @@
 [Project]
 FileName=±³´Ê±¦.dev
-Name=ÏîÄ¿1
+Name=±³´Ê±¦
 Type=1
 Ver=2
 ObjFiles=
@@ -13,7 +13,7 @@ Compiler=
 CppCompiler=
 Linker=-lwinmm_@@_
 IsCpp=1
-Icon=
+Icon=±³´Ê±¦.ico
 ExeOutput=
 ObjectOutput=
 LogOutput=
