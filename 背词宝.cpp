@@ -10,7 +10,7 @@
 #pragma comment(lib, “winmm.lib”)
 using namespace std;
 const int WK=4000;
-int wk=27,ck=54;
+int wk=27,ck=54,fc=1;
 int color,M,V,vol=600;
 class Recite{
 	fstream file;
@@ -35,6 +35,30 @@ Recite::Recite() {
 	file.close();
 	file.open("历史记录.txt");
 	file.close();
+}
+void full_screen()
+{   
+    HWND hwnd = GetForegroundWindow();
+    int cx = GetSystemMetrics(SM_CXSCREEN);            /* 屏幕宽度 像素 */
+    int cy = GetSystemMetrics(SM_CYSCREEN);            /* 屏幕高度 像素 */
+
+    LONG l_WinStyle = GetWindowLong(hwnd,GWL_STYLE);   /* 获取窗口信息 */
+    /* 设置窗口信息 最大化 取消标题栏及边框 */
+    SetWindowLong(hwnd,GWL_STYLE,(l_WinStyle | WS_POPUP | WS_MAXIMIZE) & ~WS_CAPTION & ~WS_THICKFRAME & ~WS_BORDER);
+
+    SetWindowPos(hwnd, HWND_TOP, 0, 0, cx, cy, 0);
+}
+void save() {
+	FILE *fp2;
+	fp2=fopen("beicibao.ini","w");
+	fprintf(fp2,"%d %d %d %d %d %d",color,wk,ck,M,vol,fc);
+	fclose(fp2);
+}
+void read() {
+	FILE *fp1;
+	fp1=fopen("beicibao.ini","r");
+	fscanf(fp1,"%d %d %d %d %d %d",&color,&wk,&ck,&M,&vol,&fc);
+	fclose(fp1);
 }
 void CE()
 {
@@ -70,6 +94,7 @@ void setaudio()
         if(wk<=0) wk=1;
         if(ck<=0) ck=1;
         if(M<=0) M=25;
+        if(fc==1) full_screen(); 
 }
 void set()
 {
@@ -103,9 +128,15 @@ void set()
 		if(vol>=i*100) printf("█");
 		else printf("  ");
 	}
-	    printf("| \n");
+	printf("| \n");
 	SetConsoleTextAttribute(h,color);
-	cout << "                                      |            按0返回           | " << endl;
+	cout << "                                      |显示模式(windowed重启程序生效)|" << endl;
+	cout << "                                      ";
+	if(V==4) SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),color+128);
+	if(fc==1) printf("|          Full screen         | \n");
+	else printf("|           Windowed           | \n");
+	SetConsoleTextAttribute(h,color);
+	cout << "                                      |        按0返回并保存设置     | " << endl;
 	cout << "                                      |      请输入需要服务的序号    | " << endl;
 	cout << "                                       ------------------------------  " << endl;
 	int o=0;
@@ -114,14 +145,14 @@ void set()
 		o=0;
 	    char D=getch();
 	    if(D=='0') return;
-	    if(D=='W') {V=(V+3)%4;set();o=1;}
-	    if(D=='S') {V=(V+1)%4;set();o=1;}
-	    if(D=='D') {if(V==0) wk+=1;if(V==1) ck+=1;if(V==2) M+=25;if(V==3) vol+=100;set();o=1;}
-	    if(D=='A') {if(V==0) wk-=1;if(V==1) ck-=1;if(V==2) M-=25;if(V==3) vol-=100;set();o=1;}
-    }
+	    if(D=='W') {V=(V+4)%5;set();o=1;}
+	    if(D=='S') {V=(V+1)%5;set();o=1;}
+	    if(D=='D') {if(V==0) wk+=1;if(V==1) ck+=1;if(V==2) M+=25;if(V==3) vol+=100;if(V==4) fc^=1;set();o=1;}
+	    if(D=='A') {if(V==0) wk-=1;if(V==1) ck-=1;if(V==2) M-=25;if(V==3) vol-=100;if(V==4) fc^=1;set();o=1;}
+	}
+	save();
 	return;
 }
-
 void Recite::insert_word() {
 	clock_t startTime, endTime;
 	file.open("生词本.txt", ios::out | ios::app);
@@ -454,7 +485,7 @@ void print()
 	system("cls");printf("\n\n\n\n\n\n"); 
 	cout << "                                       ______________________________  " << endl;
 	cout << "                                      |                              | " << endl;
-	cout << "                                      |      欢迎使用背词宝5.6       | " << endl;
+	cout << "                                      |      欢迎使用背词宝5.9       | " << endl;
 	cout << "                                      |          1.添加生词          | " << endl;
 	cout << "                                      |        2.显示所有生词        | " << endl;
 	cout << "                                      |          3.精确查词          | " << endl;
@@ -482,6 +513,10 @@ void Recite::update_log() {
 	cout << "2021-1-28 背词宝5.4诞生 扩展了音量"<<endl;
 	cout << "2021-1-29 背词宝5.5诞生 修复了设置bug"<<endl;
 	cout << "2021-2-2 背词宝5.6诞生 修改了项目结构"<<endl;
+	cout << "2021-2-3 背词宝5.7诞生 增加了全屏"<<endl;
+	cout << "2021-2-5 背词宝5.8诞生 修复了新版控制台fc的bug"<<endl;
+    cout << "2021-2-14 背词宝5.9诞生 增加了设置ini"<<endl;
+    
 }
 void develop_mode()
 {
@@ -498,6 +533,7 @@ void develop_mode()
     SetConsoleTextAttribute(hOut,color);
     printf("\n输入数字，可将显示主题改为选择的样式\n");
     scanf("%d",&color);SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),color);
+    save();
 }  
 void Recite::run() {
 	print();
@@ -557,6 +593,8 @@ void Recite::run() {
 int main()
 {
 	color=188;M=100;
+	read();
+	if(fc==1) full_screen();
 	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),color);
 	Recite r;
 	mciSendString("open m.mp3 alias mymusic", NULL, 0, NULL);	// 打开音乐
