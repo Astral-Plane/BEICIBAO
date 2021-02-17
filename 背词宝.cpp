@@ -12,6 +12,7 @@ using namespace std;
 const int WK=4000;
 int wk=27,ck=54,fc=1;
 int color,M,V,vol=600;
+LONG l_WinStyle=-1792344064;
 class Recite{
 	fstream file;
 	fstream file1;
@@ -41,12 +42,16 @@ void full_screen()
     HWND hwnd = GetForegroundWindow();
     int cx = GetSystemMetrics(SM_CXSCREEN);            /* 屏幕宽度 像素 */
     int cy = GetSystemMetrics(SM_CYSCREEN);            /* 屏幕高度 像素 */
-
-    LONG l_WinStyle = GetWindowLong(hwnd,GWL_STYLE);   /* 获取窗口信息 */
-    /* 设置窗口信息 最大化 取消标题栏及边框 */
     SetWindowLong(hwnd,GWL_STYLE,(l_WinStyle | WS_POPUP | WS_MAXIMIZE) & ~WS_CAPTION & ~WS_THICKFRAME & ~WS_BORDER);
-
     SetWindowPos(hwnd, HWND_TOP, 0, 0, cx, cy, 0);
+}
+void windowed()
+{   
+    HWND hwnd = GetForegroundWindow();
+    int cx = GetSystemMetrics(SM_CXSCREEN);            /* 屏幕宽度 像素 */
+    int cy = GetSystemMetrics(SM_CYSCREEN);            /* 屏幕高度 像素 */
+    SetWindowLong(hwnd,GWL_STYLE,l_WinStyle);
+    SetWindowPos(hwnd, HWND_TOP, cx/4, cy/4, cx/2, cy/2, 0);
 }
 void save() {
 	FILE *fp2;
@@ -95,33 +100,34 @@ void setaudio()
         if(ck<=0) ck=1;
         if(M<=0) M=25;
         if(fc==1) full_screen(); 
+        if(fc==0) windowed();
 }
 void set()
 {
 	system("cls");
 	setaudio();
 	HANDLE h=GetStdHandle(STD_OUTPUT_HANDLE);
-	printf("\n\n\n\n\n\n"); 
-	cout << "                                       ______________________________  " << endl;
-	cout << "                                      |                              | " << endl;
-	cout << "                                      |     设置——用W,A,S,D操控    | " << endl;
-	cout << "                                      |         释义栏宽度           | " << endl;
-	cout << "                                      ";
+	printf("\n\n\n\n\n"); 
+	cout << "                              ______________________________  " << endl;
+	cout << "                             |                              | " << endl;
+	cout << "                             |     设置——用W,A,S,D操控    | " << endl;
+	cout << "                             |         释义栏宽度           | " << endl;
+	cout << "                             ";
 	if(V==0) SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),color+128);
 	printf("|             %3d              | \n",wk);
 	SetConsoleTextAttribute(h,color);
-	cout << "                                      |         单词栏宽度           | " << endl;
-	cout << "                                      ";
+	cout << "                             |         单词栏宽度           | " << endl;
+	cout << "                             ";
 	if(V==1) SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),color+128);
 	printf("|             %3d              | \n",ck);
 	SetConsoleTextAttribute(h,color);
-	cout << "                                      |       单次最大背词量         | " << endl;
-	cout << "                                      ";
+	cout << "                             |       单次最大背词量         | " << endl;
+	cout << "                             ";
 	if(V==2) SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),color+128);
 	printf("|             %3d              | \n",M);
 	SetConsoleTextAttribute(h,color);
-	cout << "                                      |            音乐              | " << endl;
-	cout << "                                      ";
+	cout << "                             |            音乐              | " << endl;
+	cout << "                             ";
 	if(V==3) SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),color+128);
 	printf("|");
 	for(int i=1;i<=15;i++){
@@ -130,15 +136,15 @@ void set()
 	}
 	printf("| \n");
 	SetConsoleTextAttribute(h,color);
-	cout << "                                      |显示模式(windowed重启程序生效)|" << endl;
-	cout << "                                      ";
+	cout << "                             |            显示模式          |" << endl;
+	cout << "                             ";
 	if(V==4) SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),color+128);
 	if(fc==1) printf("|          Full screen         | \n");
 	else printf("|           Windowed           | \n");
 	SetConsoleTextAttribute(h,color);
-	cout << "                                      |        按0返回并保存设置     | " << endl;
-	cout << "                                      |      请输入需要服务的序号    | " << endl;
-	cout << "                                       ------------------------------  " << endl;
+	cout << "                             |        按0返回并保存设置     | " << endl;
+	cout << "                             |      请输入需要服务的序号    | " << endl;
+	cout << "                              ------------------------------  " << endl;
 	int o=0;
 	while(o==0)
 	{
@@ -482,22 +488,22 @@ void Recite::recite_word() {
 }
 void print()
 {
-	system("cls");printf("\n\n\n\n\n\n"); 
-	cout << "                                       ______________________________  " << endl;
-	cout << "                                      |                              | " << endl;
-	cout << "                                      |      欢迎使用背词宝5.9       | " << endl;
-	cout << "                                      |          1.添加生词          | " << endl;
-	cout << "                                      |        2.显示所有生词        | " << endl;
-	cout << "                                      |          3.精确查词          | " << endl;
-	cout << "                                      |       4.删除生词表中的词     | " << endl;
-	cout << "                                      |           5.背生词           | " << endl;
-	cout << "                                      |        6.查询背诵历史        | " << endl;
-	cout << "                                      |          7.更新日志          | " << endl;
-	cout << "                                      |         8.开发者模式         | " << endl;
-	cout << "                                      |            9.设置            | " << endl;
-	cout << "                                      |            0.退出            | " << endl;
-	cout << "                                      |      请输入需要服务的序号    | " << endl;
-	cout << "                                       ------------------------------  " << endl;
+	system("cls");printf("\n\n\n\n\n"); 
+	cout << "                              ______________________________  " << endl;
+	cout << "                             |                              | " << endl;
+	cout << "                             |      欢迎使用背词宝6.0       | " << endl;
+	cout << "                             |          1.添加生词          | " << endl;
+	cout << "                             |        2.显示所有生词        | " << endl;
+	cout << "                             |          3.精确查词          | " << endl;
+	cout << "                             |       4.删除生词表中的词     | " << endl;
+	cout << "                             |           5.背生词           | " << endl;
+	cout << "                             |        6.查询背诵历史        | " << endl;
+	cout << "                             |          7.更新日志          | " << endl;
+	cout << "                             |         8.开发者模式         | " << endl;
+	cout << "                             |            9.设置            | " << endl;
+	cout << "                             |            0.退出            | " << endl;
+	cout << "                             |      请输入需要服务的序号    | " << endl;
+	cout << "                              ------------------------------  " << endl;
 }
 void Recite::update_log() {
 	cout << "2018-9-4 背词宝1.0 诞生" << endl;
@@ -516,7 +522,7 @@ void Recite::update_log() {
 	cout << "2021-2-3 背词宝5.7诞生 增加了全屏"<<endl;
 	cout << "2021-2-5 背词宝5.8诞生 修复了新版控制台fc的bug"<<endl;
     cout << "2021-2-14 背词宝5.9诞生 增加了设置ini"<<endl;
-    
+    cout << "2021-2-17 背词宝6.0诞生 修复了二次启动bug"<<endl;
 }
 void develop_mode()
 {
@@ -589,12 +595,12 @@ void Recite::run() {
 		i=getch()-'0';
 	}
 }
-
 int main()
 {
 	color=188;M=100;
 	read();
 	if(fc==1) full_screen();
+	if(fc==0) windowed();
 	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),color);
 	Recite r;
 	mciSendString("open m.mp3 alias mymusic", NULL, 0, NULL);	// 打开音乐
